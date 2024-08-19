@@ -9,6 +9,7 @@ public class Card : MonoBehaviour
     public int color; // 0 - red, 1 - green, 2 - blue
     public int count; // 0 - 1, 1 - 2, 2 - 3
     public int filling; // 0 - empty, 1 - hatch, 2 - fill
+    private SpriteRenderer spr;
 
     public Card()
     {
@@ -19,9 +20,13 @@ public class Card : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        spr = GetComponent<SpriteRenderer>();
         
+        Card card = spr.GetComponent<Card>();
+        
+        spr.sprite = Resources.Load<Sprite>(card.type.ToString() + card.color.ToString() + card.count.ToString() + card.filling.ToString());
     }
 
     // Update is called once per frame

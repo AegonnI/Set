@@ -33,6 +33,7 @@ public class Spawn : MonoBehaviour
             spawnPosition = new Vector3(i % 3, i / 3, 0);
 
             Card crd = card.GetComponent<Card>();
+            SpriteRenderer spr = GetComponent<SpriteRenderer>();
 
             crd.type = cards[i].type;
             crd.color = cards[i].color;

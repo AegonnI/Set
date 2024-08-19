@@ -225,7 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 906f56f183490fa46ad36aa181575d42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  card: {fileID: 2767825974750643840, guid: 6bf2b3eea259a0f4cb22f1696823c516, type: 3}
+  card: {fileID: 6066552922566558953, guid: e20653143e9995044a61a01589b6d5bd, type: 3}
   spawnPosition: {x: 0, y: 0, z: 0}
   spawnRotation: {x: 0, y: 0, z: 0, w: 1}
 --- !u!1660057539 &9223372036854775807
