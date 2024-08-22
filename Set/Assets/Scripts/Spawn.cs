@@ -11,7 +11,7 @@ public class Spawn : MonoBehaviour
     public Vector3 spawnPosition = new Vector3(0, 0, 0);
     public Quaternion spawnRotation = Quaternion.identity;
 
-    private bool[,,,] cardBoard = new bool[3,3,3,3];
+    private bool[,,,] cardBoard = new bool[3, 3, 3, 3];
 
     private Card[] cards = new Card[cardCount];
 
@@ -26,14 +26,13 @@ public class Spawn : MonoBehaviour
         {
             cardBoard = new bool[3, 3, 3, 3];
             GenCards();
-        }        
+        }
 
         for (int i = 0; i < cardCount; i++)
         {
             spawnPosition = new Vector3(i % 3, i / 3, 0);
 
             Card crd = card.GetComponent<Card>();
-            SpriteRenderer spr = GetComponent<SpriteRenderer>();
 
             crd.type = cards[i].type;
             crd.color = cards[i].color;
@@ -48,7 +47,7 @@ public class Spawn : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     bool IsEqualOrUnqual(int i, int j, int k)
