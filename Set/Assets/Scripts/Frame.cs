@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+//using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class Frame : MonoBehaviour
 {
-    
+    public sbyte state; // -1 - empty, 0 - goldenFrame, 1 - greenFrame, 2 - redFrame
+
+
     private SpriteRenderer spr;
 
     void Awake()

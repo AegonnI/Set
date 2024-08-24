@@ -30,7 +30,7 @@ public class Spawn : MonoBehaviour
 
         for (int i = 0; i < cardCount; i++)
         {
-            spawnPosition = new Vector3(i % 3, i / 3, 0);
+            spawnPosition = new Vector3(2 * (i % 3 - 1), 2.3f * (i / 3 - 1.5f), 0);
 
             Card crd = card.GetComponent<Card>();
 
@@ -50,7 +50,7 @@ public class Spawn : MonoBehaviour
 
     }
 
-    bool IsEqualOrUnqual(int i, int j, int k)
+    public static bool IsEqualOrUnqual(int i, int j, int k)
     {
         return (((i == j) && (j == k)) || ((i != j) && (j != k) && (i != k)));
     }
