@@ -11,7 +11,8 @@ public class Card : MonoBehaviour
     public int color; // 0 - red, 1 - green, 2 - blue
     public int count; // 0 - 1, 1 - 2, 2 - 3
     public int filling; // 0 - empty, 1 - hatch, 2 - fill
-    public bool framed; 
+    public bool framed;
+    public Card card;
 
     private SpriteRenderer spr;
     public Quaternion spawnRotation = Quaternion.identity;
@@ -28,7 +29,7 @@ public class Card : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {       
-        Card card = GetComponent<Card>();
+        card = GetComponent<Card>();
 
         spr = GetComponent<SpriteRenderer>();
 
@@ -38,7 +39,11 @@ public class Card : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Logic.win_or_loose == 3)
+        {
+            framed = false;
+            Logic.win_or_loose = 4;
+        }
     }
 
     private void OnMouseDown()
