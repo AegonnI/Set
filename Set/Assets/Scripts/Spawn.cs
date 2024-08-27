@@ -8,82 +8,96 @@ public class Spawn : MonoBehaviour
 
     public static int cardCount = 12;
 
+    public int numberOfColumns = 3;
+
     public Vector3 spawnPosition = new Vector3(0, 0, 0);
     public Quaternion spawnRotation = Quaternion.identity;
 
     private bool[,,,] cardBoard = new bool[3, 3, 3, 3];
 
-    private Card[] cards = new Card[cardCount];
+    public static Card[] cards = new Card[cardCount];
 
     private Card crd;
 
     // Start is called before the first frame update
     void Start()
     {
-        System.Random rand = new System.Random();
-
-        GenCards();
-
-        while (!SolvabilityTest())
+        do
         {
             cardBoard = new bool[3, 3, 3, 3];
             GenCards();
         }
+        while (!SolvabilityTest());
 
         for (int i = 0; i < cardCount; i++)
         {
-            spawnPosition = new Vector3(2 * (i % 3 - 1), 2.3f * (i / 3 - 1.5f), 0);
-
-            crd = card.GetComponent<Card>();
-
-            crd.type = cards[i].type;
-            crd.color = cards[i].color;
-            crd.count = cards[i].count;
-            crd.filling = cards[i].filling;
-
-            Instantiate(card, spawnPosition, spawnRotation);
-        }
+            CardSpawner(i);
+        }            
     }
 
     // Update is called once per frame
     void Update()
     {
         //Debug.Log(Logic.win_or_loose);
-        //if (Logic.win_or_loose == 1)
-        //{
-        //    Regeneration();
-        //    while (!SolvabilityTest())
-        //    {
-        //        cardBoard = new bool[3, 3, 3, 3];
-        //        Regeneration();
-        //    }
+        if (Logic.win_or_loose == 1)
+        {
+            Regeneration();
 
-        //    for (int i = 0; i < cardCount; i++)
-        //    {
-        //        if (cards[i].framed)
-        //        {
-        //            crd = card.GetComponent<Card>();
+            Logic.win_or_loose = 0;
+        }
+        if (Logic.win_or_loose == 2)
+        {
+            for (int i = 0; i < cardCount; i++)
+            {
+                if (cards[i].framed)
+                {
+                    cards[i].framed = false;
+                }
+            }
+            Logic.win_or_loose = 0;
+        }
+    }
 
-        //            crd.type = cards[i].type;
-        //            crd.color = cards[i].color;
-        //            crd.count = cards[i].count;
-        //            crd.filling = cards[i].filling;
-        //        }
-        //    }
+    void CardSpawner(int i)
+    {
+        spawnPosition = new Vector2(2 * (i % numberOfColumns - 1), 2.3f * (i / numberOfColumns - 1.5f));
 
-        //    Logic.win_or_loose = 3;
-        //}
+        crd = card.GetComponent<Card>();
+
+        crd.type = cards[i].type;
+        crd.color = cards[i].color;
+        crd.count = cards[i].count;
+        crd.filling = cards[i].filling;
+        crd.index = i;
+
+        Debug.Log("Spawn");
+        Instantiate(card, spawnPosition, spawnRotation);
     }
 
     void Regeneration()
     {
+        int ii = 0; 
         for (int i = 0; i < cardCount; i++)
         {
             if (cards[i].framed)
             {
                 GenCard(i);
+                cards[i].framed = false;
+                ii = ii * 10 + i;
+                Debug.Log(ii);
             }
         }
+
+        while (!SolvabilityTest())
+        {
+            GenCard(ii / 100);
+            GenCard((ii / 10) % 10);
+            GenCard(ii % 10);
+        }
+
+        CardSpawner(ii / 100);
+        CardSpawner((ii / 10) % 10);
+        CardSpawner(ii % 10);
     }
 
     public static bool IsEqualOrUnqual(int i, int j, int k)
@@ -93,23 +107,16 @@ public class Spawn : MonoBehaviour
 
     void GenCards()
     {
-        //System.Random rand = new System.Random();
         for (int i = 0; i < cardCount; i++)
         {
             cards[i] = new Card();
-            //cards[i].type = rand.Next(3);
-            //cards[i].color = rand.Next(3);
-            //cards[i].count = rand.Next(3);
-            //cards[i].filling = rand.Next(3);
-            GenCard(i);
-            while (cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] == true)
+
+            do
             {
-                //cards[i].type = rand.Next(3);
-                //cards[i].color = rand.Next(3);
-                //cards[i].count = rand.Next(3);
-                //cards[i].filling = rand.Next(3);
                 GenCard(i);
-            }
+            } 
+            while (cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] == true);
+
             cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] = true;
         }
     }

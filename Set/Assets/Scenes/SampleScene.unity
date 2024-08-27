@@ -227,6 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   card: {fileID: 6066552922566558953, guid: e20653143e9995044a61a01589b6d5bd, type: 3}
+  numberOfColumns: 3
   spawnPosition: {x: 0, y: 0, z: 0}
   spawnRotation: {x: 0, y: 0, z: 0, w: 1}
 --- !u!114 &519420034
