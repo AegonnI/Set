@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Spawn : MonoBehaviour
@@ -7,13 +8,13 @@ public class Spawn : MonoBehaviour
     public GameObject card;
 
     public static int cardCount = 12;
-
     public int numberOfColumns = 3;
 
     public Vector3 spawnPosition = new Vector3(0, 0, 0);
-    public Quaternion spawnRotation = Quaternion.identity;
 
     private bool[,,,] cardBoard = new bool[3, 3, 3, 3];
+
+    //private IEnumerable<Vector4> query;
 
     public static Card[] cards = new Card[cardCount];
 
@@ -38,7 +39,6 @@ public class Spawn : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(Logic.win_or_loose);
         if (Logic.win_or_loose == 1)
         {
             Regeneration();
@@ -71,17 +71,24 @@ public class Spawn : MonoBehaviour
         crd.index = i;
 
         Debug.Log("Spawn");
-        Instantiate(card, spawnPosition, spawnRotation);
+        Instantiate(card, spawnPosition, Quaternion.identity);
     }
 
     void Regeneration()
     {
-        int ii = 0; 
+        int ii = 0;
         for (int i = 0; i < cardCount; i++)
         {
             if (cards[i].framed)
             {
-                GenCard(i);
+                cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] = false;
+                do
+                {
+                    GenCard(i);
+                }
+                while (cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] == true);
+                cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] = true;
+
                 cards[i].framed = false;
                 ii = ii * 10 + i;
                 Debug.Log(ii);
@@ -90,9 +97,15 @@ public class Spawn : MonoBehaviour
 
         while (!SolvabilityTest())
         {
+            cardBoard[cards[ii / 100].type, cards[ii / 100].color, cards[ii / 100].count, cards[ii / 100].filling] = false;
+            cardBoard[cards[(ii / 10) % 10].type, cards[(ii / 10) % 10].color, cards[(ii / 10) % 10].count, cards[(ii / 10) % 10].filling] = false;
+            cardBoard[cards[ii % 10].type, cards[ii % 10].color, cards[ii % 10].count, cards[ii % 10].filling] = false;
             GenCard(ii / 100);
             GenCard((ii / 10) % 10);
             GenCard(ii % 10);
+            cardBoard[cards[ii / 100].type, cards[ii / 100].color, cards[ii / 100].count, cards[ii / 100].filling] = true;
+            cardBoard[cards[(ii / 10) % 10].type, cards[(ii / 10) % 10].color, cards[(ii / 10) % 10].count, cards[(ii / 10) % 10].filling] = true;
+            cardBoard[cards[ii % 10].type, cards[ii % 10].color, cards[ii % 10].count, cards[ii % 10].filling] = true;
         }
 
         CardSpawner(ii / 100);
