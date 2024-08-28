@@ -13,6 +13,7 @@ public class Spawn : MonoBehaviour
     public Vector3 spawnPosition = new Vector3(0, 0, 0);
 
     private bool[,,,] cardBoard = new bool[3, 3, 3, 3];
+    private HashSet<Vector4> cardSet = new HashSet<Vector4>();
 
     //private IEnumerable<Vector4> query;
 
@@ -20,12 +21,15 @@ public class Spawn : MonoBehaviour
 
     private Card crd;
 
+    
+
     // Start is called before the first frame update
     void Start()
     {
         do
         {
             cardBoard = new bool[3, 3, 3, 3];
+            cardSet = new HashSet<Vector4>();
             GenCards();
         }
         while (!SolvabilityTest());
@@ -70,7 +74,7 @@ public class Spawn : MonoBehaviour
         crd.filling = cards[i].filling;
         crd.index = i;
 
-        Debug.Log("Spawn");
+        //Debug.Log("Spawn");
         Instantiate(card, spawnPosition, Quaternion.identity);
     }
 
@@ -122,15 +126,18 @@ public class Spawn : MonoBehaviour
     {
         for (int i = 0; i < cardCount; i++)
         {
-            cards[i] = new Card();
-
-            do
+            if (cards[i] == null)
             {
-                GenCard(i);
-            } 
-            while (cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] == true);
+                cards[i] = new Card();
 
-            cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] = true;
+                do
+                {
+                    GenCard(i);
+                }
+                while (cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] == true);
+
+                cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] = true;
+            }
         }
     }
 
