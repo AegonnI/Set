@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,46 +11,42 @@ public class Spawn : MonoBehaviour
     public static int cardCount = 12;
     public int numberOfColumns = 3;
 
-    public Vector3 spawnPosition = new Vector3(0, 0, 0);
+    private HashSet<Vector4> cardSet = new HashSet<Vector4>(); // Множество, для уникальности карт
 
-    private bool[,,,] cardBoard = new bool[3, 3, 3, 3];
-    private HashSet<Vector4> cardSet = new HashSet<Vector4>();
-
-    //private IEnumerable<Vector4> query;
-
-    public static Card[] cards = new Card[cardCount];
-
-    private Card crd;
-
-    
+    public static Card[] cards = new Card[cardCount]; // Массив карт
 
     // Start is called before the first frame update
     void Start()
     {
-        do
+        do // Генерация массива с картами
         {
-            cardBoard = new bool[3, 3, 3, 3];
-            cardSet = new HashSet<Vector4>();
-            GenCards();
+            cardSet = new HashSet<Vector4>(); // Обнуление множества, в случае неудачной генерации
+            
+            for (int i = 0; i < cardCount; i++) // Генерация карт
+            {
+                cards[i] = new Card();
+                GenCards(i);
+            }
         }
-        while (!SolvabilityTest());
+        while (!SolvabilityTest()); // Проверка на решаемость
 
-        for (int i = 0; i < cardCount; i++)
+        for (int i = 0; i < cardCount; i++) // Отрисовка карт
         {
             CardSpawner(i);
-        }            
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Logic.win_or_loose == 1)
+        if (Logic.win_or_loose == 1) // В случе победы: Вызов регенерации и сброс победы на неопределенность
         {
             Regeneration();
 
             Logic.win_or_loose = 0;
         }
-        if (Logic.win_or_loose == 2)
+
+        if (Logic.win_or_loose == 2) // В случае порожения: Сброс поражения на неопределенность
         {
             for (int i = 0; i < cardCount; i++)
             {
@@ -59,14 +56,14 @@ public class Spawn : MonoBehaviour
                 }
             }
             Logic.win_or_loose = 0;
-        }
+        }        
     }
 
     void CardSpawner(int i)
     {
-        spawnPosition = new Vector2(2 * (i % numberOfColumns - 1), 2.3f * (i / numberOfColumns - 1.5f));
+        Vector3 spawnPosition = new Vector2(2 * (i % numberOfColumns - 1), 2.3f * (i / numberOfColumns - 1.5f));
 
-        crd = card.GetComponent<Card>();
+        Card crd = card.GetComponent<Card>(); // Получение компоненты геймобжекта, для присваивания значений
 
         crd.type = cards[i].type;
         crd.color = cards[i].color;
@@ -74,47 +71,44 @@ public class Spawn : MonoBehaviour
         crd.filling = cards[i].filling;
         crd.index = i;
 
-        //Debug.Log("Spawn");
-        Instantiate(card, spawnPosition, Quaternion.identity);
+        Instantiate(card, spawnPosition, Quaternion.identity); // Сам спавн карты
     }
 
     void Regeneration()
     {
-        int ii = 0;
+        List<int> ints = new List<int>(); // Лист индексов карт для регенерации
+
         for (int i = 0; i < cardCount; i++)
         {
             if (cards[i].framed)
             {
-                cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] = false;
-                do
-                {
-                    GenCard(i);
-                }
-                while (cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] == true);
-                cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] = true;
+                cardSet.Remove(new Vector4(cards[i].type, cards[i].color, cards[i].count, cards[i].filling)); // удаление карты из множества
+
+                GenCards(i); // генерация новой карты
 
                 cards[i].framed = false;
-                ii = ii * 10 + i;
-                Debug.Log(ii);
+
+                ints.Add(i);
             }
         }
 
-        while (!SolvabilityTest())
+        while (!SolvabilityTest()) // Проверка новой колоды на решаемость
         {
-            cardBoard[cards[ii / 100].type, cards[ii / 100].color, cards[ii / 100].count, cards[ii / 100].filling] = false;
-            cardBoard[cards[(ii / 10) % 10].type, cards[(ii / 10) % 10].color, cards[(ii / 10) % 10].count, cards[(ii / 10) % 10].filling] = false;
-            cardBoard[cards[ii % 10].type, cards[ii % 10].color, cards[ii % 10].count, cards[ii % 10].filling] = false;
-            GenCard(ii / 100);
-            GenCard((ii / 10) % 10);
-            GenCard(ii % 10);
-            cardBoard[cards[ii / 100].type, cards[ii / 100].color, cards[ii / 100].count, cards[ii / 100].filling] = true;
-            cardBoard[cards[(ii / 10) % 10].type, cards[(ii / 10) % 10].color, cards[(ii / 10) % 10].count, cards[(ii / 10) % 10].filling] = true;
-            cardBoard[cards[ii % 10].type, cards[ii % 10].color, cards[ii % 10].count, cards[ii % 10].filling] = true;
+            foreach (int i in ints)
+            {
+                cardSet.Remove(new Vector4(cards[i].type, cards[i].color, cards[i].count, cards[i].filling));
+            }
+
+            foreach (int i in ints)
+            {
+                GenCards(i);
+            }
         }
 
-        CardSpawner(ii / 100);
-        CardSpawner((ii / 10) % 10);
-        CardSpawner(ii % 10);
+        foreach (int i in ints) // Спавн новых 3 карт
+        {
+            CardSpawner(i);
+        }
     }
 
     public static bool IsEqualOrUnqual(int i, int j, int k)
@@ -122,23 +116,15 @@ public class Spawn : MonoBehaviour
         return (((i == j) && (j == k)) || ((i != j) && (j != k) && (i != k)));
     }
 
-    void GenCards()
+    void GenCards(int i)
     {
-        for (int i = 0; i < cardCount; i++)
+        do
         {
-            if (cards[i] == null)
-            {
-                cards[i] = new Card();
-
-                do
-                {
-                    GenCard(i);
-                }
-                while (cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] == true);
-
-                cardBoard[cards[i].type, cards[i].color, cards[i].count, cards[i].filling] = true;
-            }
+            GenCard(i);
         }
+        while (cardSet.Contains(new Vector4(cards[i].type, cards[i].color, cards[i].count, cards[i].filling)));
+
+        cardSet.Add(new Vector4(cards[i].type, cards[i].color, cards[i].count, cards[i].filling));
     }
 
     void GenCard(int i)
@@ -150,7 +136,7 @@ public class Spawn : MonoBehaviour
         cards[i].filling = rand.Next(3);
     }
 
-    bool SolvabilityTest()
+    bool SolvabilityTest() // Проверяет, что есть хотябы 1 решаемый вариант
     {
         for (int i = 0; i < cardCount - 2; i++)
         {

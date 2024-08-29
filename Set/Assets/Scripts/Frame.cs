@@ -30,12 +30,10 @@ public class Frame : MonoBehaviour
     {
         if (Logic.win_or_loose == 1)
         {
-            Debug.Log("Win");
             spr.sprite = Resources.Load<Sprite>("GreenFrame");
         }
         else if (Logic.win_or_loose == 2)
         {
-            Debug.Log("Loose");
             spr.sprite = Resources.Load<Sprite>("RedFrame");
         }
     }

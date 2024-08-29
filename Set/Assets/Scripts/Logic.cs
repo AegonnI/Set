@@ -23,11 +23,16 @@ public class Logic : MonoBehaviour
         if (count_i == 3)
         {           
             if (IsWin())
+            {
                 win_or_loose = 1;
-            else 
+                Debug.Log("Win");
+            }
+            else
+            {
                 win_or_loose = 2;
-
-            //myTime = Time.time;
+                Debug.Log("Loose");
+            } 
+                
 
             set = new int[3, 4];
             count_i = 0;
