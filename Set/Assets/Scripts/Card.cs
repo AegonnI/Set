@@ -13,16 +13,12 @@ public class Card : MonoBehaviour
     public int filling; // 0 - Empty | 1 - Hatch  | 2 - Fill
     public bool framed;
     public int index;
-    public Card card;
-
-    private SpriteRenderer spr;
 
     // Start is called before the first frame update
     void Awake()
-    {       
-        card = GetComponent<Card>();
-
-        spr = GetComponent<SpriteRenderer>();
+    {
+        Card card = GetComponent<Card>();
+        SpriteRenderer spr = GetComponent<SpriteRenderer>();
 
         spr.sprite = Resources.Load<Sprite>(card.type.ToString() + card.color.ToString() + card.count.ToString() + card.filling.ToString());
     }
