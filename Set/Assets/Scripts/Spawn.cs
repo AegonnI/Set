@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Spawn : MonoBehaviour
 {
@@ -56,7 +57,12 @@ public class Spawn : MonoBehaviour
                 }
             }
             Logic.win_or_loose = 0;
-        }        
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
     }
 
     void CardSpawner(int i)

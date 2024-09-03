@@ -13,10 +13,6 @@ public class Logic : MonoBehaviour
 
     private Score score;
 
-    //private UnityEngine.UI.Text text;
-
-    //public static float myTime = 0f;
-
     // Start is called before the first frame update
     void Start()
     {

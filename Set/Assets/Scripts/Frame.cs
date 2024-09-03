@@ -11,6 +11,7 @@ public class Frame : MonoBehaviour
 
     void Awake()
     {
+        state = 0;
         gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("GoldenFrame");
     }
 
@@ -19,10 +20,12 @@ public class Frame : MonoBehaviour
     {
         if (Logic.win_or_loose == 1)
         {
+            state = 1;
             gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("GreenFrame");
         }
         else if (Logic.win_or_loose == 2)
         {
+            state = 2;
             gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("RedFrame");
         }
     }

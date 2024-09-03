@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Card : MonoBehaviour
 {
@@ -18,9 +19,8 @@ public class Card : MonoBehaviour
     void Awake()
     {
         Card card = GetComponent<Card>();
-        SpriteRenderer spr = GetComponent<SpriteRenderer>();
 
-        spr.sprite = Resources.Load<Sprite>(card.type.ToString() + card.color.ToString() + card.count.ToString() + card.filling.ToString());
+        gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(card.type.ToString() + card.color.ToString() + card.count.ToString() + card.filling.ToString());
     }
 
     // Update is called once per frame
@@ -50,5 +50,11 @@ public class Card : MonoBehaviour
             framed = true;
             Spawn.cards[index].framed = true;
         }
+        //else
+        //{
+        //    Logic.count_i--;
+        //    framed = false;
+        //    Spawn.cards[index].framed = false;
+        //}
     }
 }

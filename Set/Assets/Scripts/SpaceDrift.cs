@@ -7,9 +7,6 @@ public class SpaceDrift : MonoBehaviour
     public float moveSpeed = 0.001f;
     public float rotateSpeed = 0.011f;
 
-    //private float moveSpeed = SpawnBgCards.moveSpeed;
-    //private float rotateSpeed = SpawnBgCards.rotateSpeed;
-
     private float xx;
     private float yy;
 
