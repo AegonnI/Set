@@ -225,7 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5358bae08126ea419e2217265939115, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spaceCard: {fileID: 5574616603190262589, guid: 13f1f31f0b26f214eb103e04834d6a6a, type: 3}
+  spaceCard: {fileID: 8484870992617390462, guid: 13f1f31f0b26f214eb103e04834d6a6a, type: 3}
   cardCount: 5
 --- !u!1 &1282001503
 GameObject:
