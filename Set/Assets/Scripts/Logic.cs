@@ -10,6 +10,7 @@ public class Logic : MonoBehaviour
     public static int[,] set = new int[3,4]; // выбранные игроком карты(их ствойства)
     public static byte count_i = 0; // для счета и сброса, чтобы выбраны были 3 карты
     public static byte win_or_loose = 0; // 0 - none | 1 - win | 2 - loose
+    public static int indexForDestroyFrame = -1;
 
     private Score score;
 

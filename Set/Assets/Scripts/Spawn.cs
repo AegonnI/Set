@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,14 +23,38 @@ public class Spawn : MonoBehaviour
         do // Генерация массива с картами
         {
             cardSet = new HashSet<Vector4>(); // Обнуление множества, в случае неудачной генерации
-            
+
+            //GeneralCardGen();
+
             for (int i = 0; i < cardCount; i++) // Генерация карт
             {
                 cards[i] = new Card();
                 GenCards(i);
+
+                //if (cards[i] == null)
+                //{
+                //    cards[i] = new Card();
+                //    GenCards(i);
+                //}
             }
         }
         while (!SolvabilityTest()); // Проверка на решаемость
+
+        cardSet = new HashSet<Vector4>(); // Обнуление множества, в случае неудачной генерации
+
+        //GeneralCardGen();
+
+        //for (int i = 0; i < cardCount; i++) // Генерация карт
+        //{
+        //    //cards[i] = new Card();
+        //    //GenCards(i);
+
+        //    if (cards[i] == null)
+        //    {
+        //        cards[i] = new Card();
+        //        GenCards(i);
+        //    }
+        //}
 
         for (int i = 0; i < cardCount; i++) // Отрисовка карт
         {
@@ -67,7 +92,8 @@ public class Spawn : MonoBehaviour
 
     void CardSpawner(int i)
     {
-        Vector3 spawnPosition = new Vector2(2 * (i % numberOfColumns - 1), 2.3f * (i / numberOfColumns - 1.5f));
+        Vector3 spawnPosition = new Vector2
+            (2 * (i % numberOfColumns - 1), 2.3f * (i / numberOfColumns - 1.5f));
 
         Card crd = card.GetComponent<Card>(); // Получение компоненты геймобжекта, для присваивания значений
 
@@ -165,5 +191,163 @@ public class Spawn : MonoBehaviour
             }
         }
         return false;
+    }
+
+    void GeneralCardGen()
+    {
+        System.Random rand = new System.Random();
+        int i, j, k;
+        do
+        {
+            i = rand.Next(12); 
+            j = rand.Next(12); 
+            k = rand.Next(12);
+        } 
+        while (i == j || i == k || j == k);
+
+        cards[i] = new Card();
+        cards[j] = new Card();
+        cards[k] = new Card();
+
+        GenCards(i);
+        GenCards(j);
+
+        do
+        {
+            SolvedColumn(cards[i].type, cards[j].type, k, 0);
+            SolvedColumn(cards[i].color, cards[j].color, k, 1);
+            SolvedColumn(cards[i].count, cards[j].count, k, 2);
+            SolvedColumn(cards[i].filling, cards[j].filling, k, 3);
+
+            //if (cards[i].type == cards[j].type)
+            //{
+            //    cards[k].type = cards[i].type;
+            //}
+            //else
+            //{
+            //    for (int l = 0; l < 3; l++)
+            //    {
+            //        if (cards[i].type != l && cards[j].type != l)
+            //        {
+            //            cards[k].type = l;
+            //            break;
+            //        }
+            //    }
+            //}
+
+            //if (cards[i].color == cards[j].color)
+            //{
+            //    cards[k].color = cards[i].color;
+            //}
+            //else
+            //{
+            //    for (int l = 0; l < 3; l++)
+            //    {
+            //        if (cards[i].color != l && cards[j].color != l)
+            //        {
+            //            cards[k].color = l;
+            //            break;
+            //        }
+            //    }
+            //}
+
+            //if (cards[i].count == cards[j].count)
+            //{
+            //    cards[k].count = cards[i].count;
+            //}
+            //else
+            //{
+            //    for (int l = 0; l < 3; l++)
+            //    {
+            //        if (cards[i].count != l && cards[j].count != l)
+            //        {
+            //            cards[k].count = l;
+            //            break;
+            //        }
+            //    }
+            //}
+
+            //if (cards[i].filling == cards[j].filling)
+            //{
+            //    cards[k].filling = cards[i].filling;
+            //}
+            //else
+            //{
+            //    for (int l = 0; l < 3; l++)
+            //    {
+            //        if (cards[i].filling != l && cards[j].filling != l)
+            //        {
+            //            cards[k].filling = l;
+            //            break;
+            //        }
+            //    }
+            //}
+
+        }
+        while (cardSet.Contains(new Vector4(cards[k].type, cards[k].color, cards[k].count, cards[k].filling)));
+
+        cardSet.Add(new Vector4(cards[k].type, cards[k].color, cards[k].count, cards[k].filling));
+
+        Debug.Log(cards[i].type + ", " + cards[i].color + ", " + cards[i].count + ", " + cards[i].filling);
+        Debug.Log(cards[j].type + ", " + cards[j].color + ", " + cards[j].count + ", " + cards[j].filling);
+        Debug.Log(cards[k].type + ", " + cards[k].color + ", " + cards[k].count + ", " + cards[k].filling);
+
+        //if (cards[i].type == cards[j].type)
+        //{
+        //    cards[k].type = cards[i].type;
+        //}
+        //else
+        //{
+        //    for (int l = 0; l < 3; l++) 
+        //    {
+        //        if (cards[i].type != l && cards[j].type != l)
+        //        {
+        //            cards[k].type = l;
+        //            break;
+        //        }
+        //    }
+        //}
+    }
+
+    void SolvedColumn(int i, int j, int k, int who)
+    {
+        if (i == j)
+        {
+            SetCardValue(i, k, who);
+        }
+        else
+        {
+            for (int l = 0; l < 3; l++)
+            {
+                if (i != l && j != l)
+                {
+                    SetCardValue(l, k, who);
+                    break;
+                }
+            }
+        }
+    }
+
+    void SetCardValue(int value, int index, int who)
+    {
+        switch (who)
+        {
+            case 0:
+                cards[index].type = value; break;
+            case 1:
+                cards[index].color = value; break;
+            case 2:
+                cards[index].count = value; break;
+            case 3:
+                cards[index].filling = value; break;
+        }
+    }
+
+    void SetCardValues(int index, int x, int y, int z, int w)
+    {
+        cards[index].type = x;
+        cards[index].color = y;
+        cards[index].count = z;
+        cards[index].filling = w;
     }
 }

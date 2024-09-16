@@ -6,6 +6,7 @@ using UnityEngine;
 public class Frame : MonoBehaviour
 {
     public sbyte state; // -1 - empty, 0 - goldenFrame, 1 - greenFrame, 2 - redFrame
+    public int index;
 
     public static float timeForDestroy = 0.3f;
 
@@ -33,8 +34,13 @@ public class Frame : MonoBehaviour
     private void LateUpdate()
     {
         if (Logic.win_or_loose == 1 || Logic.win_or_loose == 2)
-        {
+        {           
             Destroy(gameObject, timeForDestroy);
+        }
+        else if (Logic.indexForDestroyFrame == index)
+        {
+            Logic.indexForDestroyFrame = -1;
+            Destroy(gameObject);
         }
     }
 }

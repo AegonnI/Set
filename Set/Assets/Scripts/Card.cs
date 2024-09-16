@@ -28,6 +28,7 @@ public class Card : MonoBehaviour
     {
         if (Logic.win_or_loose > 0 && framed)
         {
+            Debug.Log("Card" + index);
             framed = false;
             if (Logic.win_or_loose == 1)
             {
@@ -38,6 +39,7 @@ public class Card : MonoBehaviour
 
     private void OnMouseDown()
     {
+        Debug.Log(index + " " + framed);
         if (!framed)
         {
             Logic.set[Logic.count_i, 0] = type;
@@ -46,15 +48,17 @@ public class Card : MonoBehaviour
             Logic.set[Logic.count_i, 3] = filling;
             Logic.count_i++;
             
+            frame.GetComponent<Frame>().index = index;
             Instantiate(frame, transform.position, Quaternion.identity);
             framed = true;
             Spawn.cards[index].framed = true;
         }
-        //else
-        //{
-        //    Logic.count_i--;
-        //    framed = false;
-        //    Spawn.cards[index].framed = false;
-        //}
+        else
+        {
+            Logic.count_i--;
+            Logic.indexForDestroyFrame = index;
+            framed = false;           
+            Spawn.cards[index].framed = false;
+        }
     }
 }
